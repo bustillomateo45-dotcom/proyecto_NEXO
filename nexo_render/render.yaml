@@ -32,7 +32,7 @@ services:
       - key: VAPID_PRIVATE_KEY    # sale de: python generar_vapid.py
         sync: false
       - key: VAPID_CONTACT
-        value: mailto:TU_CORREO@ejemplo.com   # cámbialo por un correo real
+        value: mailto:bustillomateo45@gmail.com  # cámbialo por un correo real
     # --- Solo en planes de pago: disco para los archivos adjuntos del chat ---
     # Descomenta estas líneas y cambia plan a starter:
     # disk:
