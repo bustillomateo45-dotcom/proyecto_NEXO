@@ -1,0 +1,44 @@
+# Blueprint de Render para Nexo.
+# En Render: New > Blueprint > elige tu repositorio de GitHub.
+
+databases:
+  - name: nexo-db
+    databaseName: nexo
+    user: nexo
+    plan: free            # La base gratis caduca. Para uso real cambia a basic-256mb.
+
+services:
+  - type: web
+    name: nexo
+    runtime: python
+    plan: free            # Se duerme tras 15 min sin tráfico. Para uso real: starter.
+    buildCommand: pip install -r requirements.txt
+    # 1 proceso + 8 hilos: suficiente para el chat y evita carreras al crear el esquema
+    startCommand: gunicorn app:app --workers 1 --threads 8 --timeout 60 --bind 0.0.0.0:$PORT
+    healthCheckPath: /healthz
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: DATABASE_URL
+        fromDatabase:
+          name: nexo-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: NEXO_ADMIN_USER
+        value: admin
+      - key: NEXO_ADMIN_PASS      # pon tu contraseña de administrador en el panel de Render
+        sync: false
+      - key: VAPID_PRIVATE_KEY    # sale de: python generar_vapid.py
+        sync: false
+      - key: VAPID_CONTACT
+        value: mailto:TU_CORREO@ejemplo.com   # cámbialo por un correo real
+    # --- Solo en planes de pago: disco para los archivos adjuntos del chat ---
+    # Descomenta estas líneas y cambia plan a starter:
+    # disk:
+    #   name: nexo-uploads
+    #   mountPath: /var/data
+    #   sizeGB: 1
+    # y agrega en envVars:
+    #   - key: NEXO_UPLOAD_DIR
+    #     value: /var/data/uploads

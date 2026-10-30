@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Nexo</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background:#f2f2f2;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
+  }
+  .slide {
+    width:1280px;
+    max-width:100%;
+    aspect-ratio:16/9;
+    background:#ffffff;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 10px 40px rgba(0,0,0,0.2);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    padding:40px 0;
+  }
+  .banner {
+    display:flex;
+    height:38px;
+    width:calc(100% - 120px);
+    position:absolute;
+    top:40px;
+  }
+  .banner .dark {
+    background:#12213b;
+    flex:0 0 45%;
+    clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%);
+  }
+  .banner .red {
+    background:#c8102e;
+    flex:1;
+    margin-left:-8%;
+  }
+  h1 {
+    text-align:center;
+    font-size:64px;
+    font-weight:800;
+    letter-spacing:2px;
+    color:#12213b;
+    margin-bottom:24px;
+  }
+  .content {
+    margin:0 60px;
+    border:1px solid #d9d9d9;
+    border-radius:6px;
+    padding:28px 36px;
+    background:#fbfbfb;
+  }
+  .content p {
+    font-size:17px;
+    line-height:1.55;
+    color:#1a1a1a;
+    text-align:justify;
+    margin-bottom:14px;
+  }
+  .content p:last-child { margin-bottom:0; }
+</style>
+</head>
+<body>
+  <div class="slide">
+    <div class="banner">
+      <div class="dark"></div>
+      <div class="red"></div>
+    </div>
+    <h1>NEXO</h1>
+    <div class="content">
+      <p>
+        Nuestro proyecto es un sitio web o plataforma diseñada para comunicarse
+        directamente con los estudiantes, un lugar donde los coordinadores
+        pueden enviar un mensaje de forma directa a todos los grados o a un
+        grado en específico, sin necesidad de intermediarios para transmitir
+        la información. De igual manera, los docentes pueden enviar mensajes
+        a un salón en particular para recordar actividades, solicitar
+        materiales o hacer recordatorios de algún pendiente.
+      </p>
+      <p>
+        De esta manera se establece una comunicación directa entre la
+        institución educativa y los estudiantes, eliminando la dependencia de
+        canales informales o de terceros que muchas veces distorsionan o
+        retrasan la información importante.
+      </p>
+      <p>
+        Nuestro proyecto tiene la misión de crear esta vía de información para
+        apoyar la comunicación entre coordinadores, docentes y estudiantes,
+        con el fin de disminuir la tasa de estudiantes que no presentan tarea
+        por falta de comunicación entre estudiantes e institución.
+      </p>
+    </div>
+    <br>
+      <a href="/login">
+    <button>Iniciar sesion</button>
+  </a> 
+  </div>
+
+</body>
+</html>

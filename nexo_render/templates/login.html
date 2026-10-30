@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Iniciar sesión</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+
+            height: 100vh;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            font-family: Arial;
+
+            background: #111827;
+        }
+
+        .login {
+            width: 380px;
+
+            padding: 35px;
+
+            background: #1f2937;
+
+            border-radius: 15px;
+
+            color: white;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        label {
+            display: block;
+
+            margin-top: 20px;
+        }
+
+        input {
+            width: 100%;
+
+            padding: 12px;
+
+            margin-top: 8px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: #374151;
+
+            color: white;
+        }
+
+        button {
+            width: 100%;
+
+            padding: 13px;
+
+            margin-top: 25px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: #2563eb;
+
+            color: white;
+
+            cursor: pointer;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+
+            cursor: not-allowed;
+        }
+
+        .crear {
+            display: block;
+
+            text-align: center;
+
+            color: #60a5fa;
+
+            text-decoration: none;
+
+            cursor: pointer;
+
+            margin-top: 15px;
+        }
+
+        #mensaje {
+            text-align: center;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="login">
+
+    <h1>
+        Iniciar sesión
+    </h1>
+
+    <form method="POST" action="/login">
+
+        <label>
+            Usuario
+        </label>
+
+        <input
+            name="usuario"
+            type="text"
+            placeholder="Ej: cperez"
+            required
+        >
+
+
+        <label>
+            Contraseña
+        </label>
+
+        <input
+            name="password"
+            type="password"
+            placeholder="Contraseña"
+            required
+        >
+
+
+        <button type="submit">
+            ENTRAR
+        </button>
+
+    </form>
+    {% if error %}
+    <p id="mensaje">{{ error }}</p>
+    {% endif %}
+
+</div>
+
+</body>
+
+</html>

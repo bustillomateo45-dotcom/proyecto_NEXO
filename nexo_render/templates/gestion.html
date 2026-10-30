@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexo — Gestión</title>
+<style>
+  :root{ --bg:#F3F4F1; --surface:#fff; --line:#E4E6E1; --ink:#1C211E; --soft:#6E756E; --accent:#4A3B7A; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; font-family:'Segoe UI',Arial,sans-serif; background:var(--bg); color:var(--ink); }
+  .topbar{ display:flex; justify-content:space-between; align-items:center; padding:10px 18px; background:var(--ink); color:#fff; font-size:13px; }
+  .topbar a{ color:#fff; text-decoration:none; margin-left:14px; font-weight:600; }
+  main{ max-width:1100px; margin:0 auto; padding:20px; display:grid; gap:18px; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); }
+  section{ background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:18px; }
+  section.ancha{ grid-column:1/-1; }
+  h2{ margin:0 0 12px; font-size:16px; }
+  label{ display:block; font-size:12px; color:var(--soft); margin-top:10px; }
+  input,select{ width:100%; padding:9px 10px; border:1px solid var(--line); border-radius:8px; font-size:14px; background:#fff; }
+  button{ margin-top:14px; padding:10px 14px; border:none; border-radius:8px; background:var(--accent); color:#fff; font-weight:600; cursor:pointer; }
+  button.peligro{ background:#C0392B; margin:0; padding:5px 10px; font-size:12px; }
+  button.secundario{ background:#6E756E; margin:0; padding:5px 10px; font-size:12px; }
+  .acciones{ display:flex; gap:6px; flex-wrap:wrap; }
+  .acciones form{ margin:0; }
+  .nota{ font-size:12.5px; color:var(--soft); margin:10px 0 0; }
+  table{ width:100%; border-collapse:collapse; font-size:13.5px; }
+  th,td{ text-align:left; padding:8px 6px; border-bottom:1px solid var(--line); }
+  .flash{ max-width:1100px; margin:14px auto 0; padding:0 20px; }
+  .flash div{ padding:10px 14px; border-radius:8px; margin-bottom:8px; font-size:14px; }
+  .flash .ok{ background:#E7EFEC; color:#1F5D50; }
+  .flash .error{ background:#F9E3E0; color:#C0392B; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <strong>NEXO · Gestión</strong>
+  <span>{{ nombre }}
+    <a href="/administracion">Mensajería</a>
+    <a href="/logout">Salir</a>
+  </span>
+</div>
+
+<div class="flash">
+  {% with mensajes = get_flashed_messages(with_categories=true) %}
+    {% for categoria, texto in mensajes %}
+      <div class="{{ categoria }}">{{ texto }}</div>
+    {% endfor %}
+  {% endwith %}
+</div>
+
+<main>
+
+  <section>
+    <h2>Crear usuario</h2>
+    <form method="POST" action="/administracion/gestion/usuario">
+      <label>Nombre completo</label><input name="nombre" required>
+      <label>Usuario (acceso)</label><input name="usuario" required>
+      <label>Contraseña</label><input name="password" type="password" required>
+      <label>Rol</label>
+      <select name="rol">
+        {% for r in roles %}<option value="{{ r }}">{{ r|capitalize }}</option>{% endfor %}
+      </select>
+      <label>Grupo (solo estudiantes)</label>
+      <select name="grupo_id">
+        <option value="">— Sin grupo —</option>
+        {% for g in grupos %}<option value="{{ g[0] }}">{{ g[2] }} · {{ g[1] }}</option>{% endfor %}
+      </select>
+      <button type="submit">Crear usuario</button>
+    </form>
+  </section>
+
+  <section>
+    <h2>Crear grupo</h2>
+    <form method="POST" action="/administracion/gestion/grupo">
+      <label>Grado</label>
+      <select name="grado_id" required>
+        {% for g in grados %}<option value="{{ g[0] }}">{{ g[1] }}</option>{% endfor %}
+      </select>
+      <label>Nombre del grupo (ej. 11-06)</label><input name="nombre" required>
+      <button type="submit">Crear grupo</button>
+    </form>
+
+    <h2 style="margin-top:22px">Crear materia</h2>
+    <form method="POST" action="/administracion/gestion/materia">
+      <label>Nombre de la materia</label><input name="nombre" required>
+      <button type="submit">Crear materia</button>
+    </form>
+  </section>
+
+  <section>
+    <h2>Matricular estudiante</h2>
+    <form method="POST" action="/administracion/gestion/matricula">
+      <label>Estudiante (sin grupo)</label>
+      <select name="estudiante_id" required>
+        {% for e in estudiantes if not e[4] %}<option value="{{ e[0] }}">{{ e[1] }} (@{{ e[2] }})</option>
+        {% else %}<option value="" disabled selected>Todos los estudiantes ya tienen grupo</option>{% endfor %}
+      </select>
+      <p class="nota">Un estudiante solo puede estar en un grupo. Para cambiarlo, quítale la matrícula en la tabla de usuarios y asígnalo de nuevo.</p>
+      <label>Grupo</label>
+      <select name="grupo_id" required>
+        {% for g in grupos %}<option value="{{ g[0] }}">{{ g[2] }} · {{ g[1] }}</option>{% endfor %}
+      </select>
+      <button type="submit">Asignar al grupo</button>
+    </form>
+  </section>
+
+  <section>
+    <h2>Asignar profesor a materia y grupo</h2>
+    <form method="POST" action="/administracion/gestion/asignacion">
+      <label>Profesor</label>
+      <select name="profesor_id" required>
+        {% for p in profesores %}<option value="{{ p[0] }}">{{ p[1] }} (@{{ p[2] }})</option>{% endfor %}
+      </select>
+      <label>Materia</label>
+      <select name="materia_id" required>
+        {% for m in materias %}<option value="{{ m[0] }}">{{ m[1] }}</option>{% endfor %}
+      </select>
+      <label>Grupo</label>
+      <select name="grupo_id" required>
+        {% for g in grupos %}<option value="{{ g[0] }}">{{ g[2] }} · {{ g[1] }}</option>{% endfor %}
+      </select>
+      <button type="submit">Asignar</button>
+    </form>
+  </section>
+
+  <section class="ancha">
+    <h2>Asignaciones de profesores</h2>
+    <table>
+      <tr><th>Profesor</th><th>Materia</th><th>Grupo</th><th></th></tr>
+      {% for a in asignaciones %}
+      <tr>
+        <td>{{ a[1] }}</td><td>{{ a[2] }}</td><td>{{ a[3] }}</td>
+        <td>
+          <form method="POST" action="/administracion/gestion/asignacion/eliminar" style="margin:0">
+            <input type="hidden" name="asignacion_id" value="{{ a[0] }}">
+            <button class="peligro" type="submit">Quitar</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="4">Todavía no hay asignaciones.</td></tr>
+      {% endfor %}
+    </table>
+  </section>
+
+  <section class="ancha">
+    <h2>Usuarios</h2>
+    <table>
+      <tr><th>Nombre</th><th>Usuario</th><th>Rol</th><th>Grupo</th><th>Acciones</th></tr>
+      {% for u in usuarios %}
+      <tr>
+        <td>{{ u[1] }}</td><td>@{{ u[2] }}</td><td>{{ u[3] }}</td><td>{{ u[4] or '—' }}</td>
+        <td>
+          <div class="acciones">
+            {% if u[3] == 'estudiante' and u[4] %}
+            <form method="POST" action="/administracion/gestion/matricula/eliminar"
+                  data-nombre="{{ u[1] }}" data-grupo="{{ u[4] }}"
+                  onsubmit="return confirm('¿Quitar a ' + this.dataset.nombre + ' del grupo ' + this.dataset.grupo + '?')">
+              <input type="hidden" name="estudiante_id" value="{{ u[0] }}">
+              <button class="secundario" type="submit">Quitar matrícula</button>
+            </form>
+            {% endif %}
+            {% if u[0] != yo_id %}
+            <form method="POST" action="/administracion/gestion/usuario/eliminar"
+                  data-nombre="{{ u[1] }}"
+                  onsubmit="return confirm('¿Eliminar a ' + this.dataset.nombre + '? Se borrarán también sus mensajes y esta acción no se puede deshacer.')">
+              <input type="hidden" name="usuario_id" value="{{ u[0] }}">
+              <button class="peligro" type="submit">Eliminar</button>
+            </form>
+            {% endif %}
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </section>
+
+  <section>
+    <h2>Cambiar contraseña de un usuario</h2>
+    <form method="POST" action="/administracion/gestion/password/usuario">
+      <label>Usuario</label>
+      <select name="usuario_id" required>
+        {% for u in usuarios %}<option value="{{ u[0] }}">{{ u[1] }} (@{{ u[2] }}) · {{ u[3] }}</option>{% endfor %}
+      </select>
+      <label>Nueva contraseña</label><input name="password" type="password" required>
+      <label>Confirmar</label><input name="confirmar" type="password" required>
+      <button type="submit">Cambiar contraseña</button>
+    </form>
+  </section>
+
+  <section>
+    <h2>Cambiar mi contraseña</h2>
+    <form method="POST" action="/administracion/gestion/password">
+      <label>Nueva contraseña</label><input name="password" type="password" required>
+      <label>Confirmar</label><input name="confirmar" type="password" required>
+      <button type="submit">Actualizar</button>
+    </form>
+  </section>
+
+</main>
+</body>
+</html>
