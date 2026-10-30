@@ -11,6 +11,15 @@ services:
   - type: web
     name: nexo
     runtime: python
+
+
+
+       services:
+     - type: web
+       name: nexo
+       runtime: python
+       rootDir: nexo_render
+       plan: free
     plan: free            # Se duerme tras 15 min sin tráfico. Para uso real: starter.
     buildCommand: pip install -r requirements.txt
     # 1 proceso + 8 hilos: suficiente para el chat y evita carreras al crear el esquema
